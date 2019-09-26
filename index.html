@@ -3,6 +3,75 @@
   <head>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/timeago@1.6.7/jquery.timeago.js" type="text/javascript"></script>
+    <style type="text/css">
+
+      body {
+        font: 13pt Arial, sans-serif;
+        word-spacing: 1px;
+      }
+
+      .timestamp {
+        color: grey;
+        font: 10pt Arial, sans-serif;
+        margin-left: 10px;
+      }      
+
+      .user {
+        color: royalblue;
+        font: 14pt Arial, sans-serif;
+        margin-right: 4px;
+      }
+
+      .user:hover {
+        color: mediumblue;
+        cursor: pointer;
+      }
+
+      .user:active {
+        color: cornflowerblue;
+      }
+
+      .heading, .tweets {
+        border: 1px solid silver;
+        padding: 10px 20px;
+      }
+
+      .heading {
+        font: 22pt Arial, sans-serif;
+        font-weight: 800;
+        margin-top: 10px;        
+      }
+
+      .tweets {
+        margin-top: -1px;
+      }
+
+      .button {
+        background-color: dodgerblue;
+        border: thin solid black;
+        box-shadow: -1px 3px silver;
+        color: lightcyan;
+        margin: 20px;
+        padding: 5px 15px;
+      }
+
+      .button:hover, .showMore:hover {
+        cursor: pointer;
+      }
+
+      .button:active {
+        background-color: cornflowerblue;
+        box-shadow: 0 1px dimgrey;
+        transform: translate(-1px, 2px);
+      }
+
+      .showMore {
+        margin: 10px;
+      }
+
+
+    </style>
   </head>
   <body>
     <script>
@@ -15,14 +84,14 @@
         var username;
 
 
-        var $home = $('<div class="button"></div>');
+        var $home = $('<span class="home button"></span>');
         $home.text('Go Home');
         $home.appendTo($body);
-
-        var $refresh = $('<div class="button"></div>');
+        
+        var $refresh = $('<span class="refresh button"></span>');
         $refresh.text('Refresh');
         $refresh.appendTo($body);
-        
+
         var $heading = $('<div class="heading"></div>');
         $heading.text('Twiddles');
         $heading.appendTo($body);
@@ -35,7 +104,7 @@
         while(index >= 0){
           var tweet = streams.home[index];
           var $tweet = $('<div class="tweets"></div>');
-          $tweet.html('<a class="user" id= ' + tweet.user + '>@' + tweet.user + '</a>: ' + tweet.message + ' ' + tweet.created_at.toLocaleString('en-US'));
+          $tweet.html('<a class="user" id= ' + tweet.user + '>@' + tweet.user + '</a>: ' + tweet.message + ' <a class="timestamp">' + jQuery.timeago(tweet.created_at) + '</a>');
           $tweet.appendTo($body);
           index -= 1;
         }        
@@ -68,7 +137,7 @@
             while(count >= 0) {
               var tweet = streams.home[index];
               var $tweet = $('<div class="tweets"></div>');
-              $tweet.html('<a class="user" id= ' + tweet.user + '>@' + tweet.user + '</a>: ' + tweet.message + ' ' + tweet.created_at.toLocaleString('en-US'));
+              $tweet.html('<a class="user" id= ' + tweet.user + '>@' + tweet.user + '</a>: ' + tweet.message + ' <a class="timestamp">' + jQuery.timeago(tweet.created_at) + '</a>');
               $tweet.appendTo($body);
               index -= 1;
               count -= 1;
@@ -77,11 +146,11 @@
 
             $heading.text(username + '\'s Timeline');
             index = streams.users[username].length - 1;
-            var count = 3;
+            var count = 10;
             while(count >= 0 && index >= 0) {
               var tweet = streams.users[username][index];
               var $tweet = $('<div class="tweets"></div>');
-              $tweet.html('<a class="user" id= ' + tweet.user + '>@' + tweet.user + '</a>: ' + tweet.message + ' ' + tweet.created_at.toLocaleString('en-US'));
+              $tweet.html('<a class="user" id= ' + tweet.user + '>@' + tweet.user + '</a>: ' + tweet.message + ' <a class="timestamp">' + jQuery.timeago(tweet.created_at) + '</a>');
               $tweet.appendTo($body);
               index -= 1;
               count -= 1;
@@ -95,11 +164,11 @@
 
         function showMore() {
           $('.showMore').remove();
-          count = 3;
+          count = 10;
           while(count >= 0 && index >= 0) {
             var tweet = streams.users[username][index];
             var $tweet = $('<div class="tweets"></div>');
-            $tweet.html('<a class="user" id= ' + tweet.user + '>@' + tweet.user + '</a>: ' + tweet.message + ' ' + tweet.created_at.toLocaleString('en-US'));
+            $tweet.html('<a class="user" id= ' + tweet.user + '>@' + tweet.user + '</a>: ' + tweet.message + ' <a class="timestamp">' + jQuery.timeago(tweet.created_at) + '</a>');
             $tweet.appendTo($body);
             index -= 1;
             count -= 1;
