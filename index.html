@@ -11,15 +11,103 @@
         var $body = $('body');
         $body.html('');
 
+        var isHome = true;
+        var username;
+
+
+        var $home = $('<div class="button"></div>');
+        $home.text('Go Home');
+        $home.appendTo($body);
+
+        var $refresh = $('<div class="button"></div>');
+        $refresh.text('Refresh');
+        $refresh.appendTo($body);
+        
+        var $heading = $('<div class="heading"></div>');
+        $heading.text('Twiddles');
+        $heading.appendTo($body);
+
+        var $showMore = $('<div class="showMore"></div>');
+        $showMore.text('Show more...');
+
+
         var index = streams.home.length - 1;
         while(index >= 0){
           var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
+          var $tweet = $('<div class="tweets"></div>');
+          $tweet.html('<a class="user" id= ' + tweet.user + '>@' + tweet.user + '</a>: ' + tweet.message + ' ' + tweet.created_at.toLocaleString('en-US'));
           $tweet.appendTo($body);
           index -= 1;
+        }        
+
+        $refresh.click(function() {
+          repopulate();
+        });
+
+        $home.click(function() {
+          isHome = true;
+          repopulate();
+        });
+
+        $(document).on('click', '.user', function(event) {
+          isHome = false;
+          username = event.target.id;
+          repopulate();
+        });
+
+        $(document).on('click', '.showMore', showMore);
+
+        function repopulate() {
+          $('.tweets').remove();
+          $('.showMore').remove();
+
+          if (isHome) {
+            $heading.text('Twiddles');
+            index = streams.home.length - 1;
+            var count = 10;
+            while(count >= 0) {
+              var tweet = streams.home[index];
+              var $tweet = $('<div class="tweets"></div>');
+              $tweet.html('<a class="user" id= ' + tweet.user + '>@' + tweet.user + '</a>: ' + tweet.message + ' ' + tweet.created_at.toLocaleString('en-US'));
+              $tweet.appendTo($body);
+              index -= 1;
+              count -= 1;
+            }
+          } else {
+
+            $heading.text(username + '\'s Timeline');
+            index = streams.users[username].length - 1;
+            var count = 3;
+            while(count >= 0 && index >= 0) {
+              var tweet = streams.users[username][index];
+              var $tweet = $('<div class="tweets"></div>');
+              $tweet.html('<a class="user" id= ' + tweet.user + '>@' + tweet.user + '</a>: ' + tweet.message + ' ' + tweet.created_at.toLocaleString('en-US'));
+              $tweet.appendTo($body);
+              index -= 1;
+              count -= 1;
+            }
+
+            if(index > 0){
+              $showMore.appendTo($body);
+            }
+          }
         }
 
+        function showMore() {
+          $('.showMore').remove();
+          count = 3;
+          while(count >= 0 && index >= 0) {
+            var tweet = streams.users[username][index];
+            var $tweet = $('<div class="tweets"></div>');
+            $tweet.html('<a class="user" id= ' + tweet.user + '>@' + tweet.user + '</a>: ' + tweet.message + ' ' + tweet.created_at.toLocaleString('en-US'));
+            $tweet.appendTo($body);
+            index -= 1;
+            count -= 1;
+          }
+          if(index > 0){
+            $showMore.appendTo($body);
+          }
+        }
       });
 
     </script>
