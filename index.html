@@ -50,6 +50,7 @@
       .button {
         background-color: dodgerblue;
         border: thin solid black;
+        border-radius: 5px;
         box-shadow: -1px 3px silver;
         color: lightcyan;
         margin: 20px;
@@ -70,11 +71,28 @@
         margin: 10px;
       }
 
+      .submitContainer {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .textBox {
+        border-radius: 5px;
+        font-size: 18px;
+        padding: 5px;
+        width: 600px;
+      }
+
+      .submit {
+        font-size: 18px;
+      }
 
     </style>
   </head>
   <body>
     <script>
+
+      streams.users['Me'] = [];
 
       $(document).ready(function(){
         var $body = $('body');
@@ -83,10 +101,19 @@
         var isHome = true;
         var username;
 
+        var $submitContainer = $('<div class="submitContainer"></div>');
+        var $twiddleInput = $('<input type="text" class="textBox" placeholder="twiddle something...">');
+        var $twiddleButton = $('<input type="submit" class="submit button" value="Twiddle">');
+        $twiddleInput.appendTo($submitContainer);
+        $twiddleButton.appendTo($submitContainer);
+        
+        if (isHome) {
+          $submitContainer.appendTo($body);
+        }
 
-        var $home = $('<span class="home button"></span>');
-        $home.text('Go Home');
-        $home.appendTo($body);
+        var $goHome = $('<span class="goHome button"></span>');
+        $goHome.text('Go Home');
+        $goHome.appendTo($body);
         
         var $refresh = $('<span class="refresh button"></span>');
         $refresh.text('Refresh');
@@ -113,10 +140,12 @@
           repopulate();
         });
 
-        $home.click(function() {
+        $goHome.click(function() {
           isHome = true;
           repopulate();
         });
+
+        $twiddleButton.click(submitTwiddle);
 
         $(document).on('click', '.user', function(event) {
           isHome = false;
@@ -126,11 +155,15 @@
 
         $(document).on('click', '.showMore', showMore);
 
+        //$(document).on('click', $twiddleButton, submitTwiddle);
+
         function repopulate() {
+          //$('.submitContainer').remove();
           $('.tweets').remove();
           $('.showMore').remove();
 
           if (isHome) {
+            //$submitContainer.prependTo($body);
             $heading.text('Twiddles');
             index = streams.home.length - 1;
             var count = 10;
@@ -145,6 +178,9 @@
           } else {
 
             $heading.text(username + '\'s Timeline');
+            if(username === "Me") {
+              $heading.text('Your Timeline');
+            }
             index = streams.users[username].length - 1;
             var count = 10;
             while(count >= 0 && index >= 0) {
@@ -177,6 +213,19 @@
             $showMore.appendTo($body);
           }
         }
+
+        function submitTwiddle() {
+          if ($('.textBox').val()) {
+            var tweet = {};
+            tweet.user = 'Me';
+            tweet.message = $('.textBox').val();
+            tweet.created_at = new Date();
+            addTweet(tweet);
+            $('.textBox').val("");
+            repopulate();
+          }
+        }
+
       });
 
     </script>
